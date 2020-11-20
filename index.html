@@ -701,11 +701,11 @@
         function pop_Arbres_remarquables_3(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Nom arbre</th>\
+                        <th scope="row">Nom de l'arbre</th>\
                         <td>' + (feature.properties['Nom_arbre'] !== null ? Autolinker.link(feature.properties['Nom_arbre'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Espece</th>\
+                        <th scope="row">Espèce</th>\
                         <td>' + (feature.properties['Espece'] !== null ? Autolinker.link(feature.properties['Espece'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -713,7 +713,7 @@
                         <td>' + (feature.properties['Statut'] !== null ? Autolinker.link(feature.properties['Statut'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Localisati</strong><br />' + (feature.properties['Localisati'] !== null ? Autolinker.link(feature.properties['Localisati'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Localisation</strong><br />' + (feature.properties['Localisati'] !== null ? Autolinker.link(feature.properties['Localisati'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['Photos'] !== null ? '<img src="images/' + String(feature.properties['Photos']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
