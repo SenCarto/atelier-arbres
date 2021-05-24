@@ -8,9 +8,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/MarkerCluster.css">
-        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
-        <link rel="stylesheet" href="css/leaflet-search.css">
         <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
         <style>
         html, body, #map {
@@ -20,11 +17,13 @@
             margin: 0;
         }
         </style>
-        <title>Localisation de arbres remarquables de la communauté de commune de Nièvre et Somme</title>
+        <title>Localisation de arbres remarquables de la communauté de communes de Nièvre et Somme</title>
     </head>
     <body>
-        <div id="map">
-        </div>
+        <div id="map"style="z-index:1;">
+		    </div>
+		<div id="logo">
+            <img src="https://www.zupimages.net/up/21/21/ty8i.png" alt="some_text" style="position:fixed;bottom:0;left:0;z-index:2;">
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/leaflet.rotatedMarker.js"></script>
@@ -35,23 +34,29 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
-        <script src="js/leaflet.markercluster.js"></script>
-        <script src="js/leaflet-search.js"></script>
         <script src="data/Communes_2.js"></script>
-        <script src="data/Arbres_remarquables_3.js"></script>
+        <script src="data/GR125GR800_3.js"></script>
+        <script src="data/GR800_4.js"></script>
+        <script src="data/GR123_5.js"></script>
+        <script src="data/VoieVerte_6.js"></script>
+        <script src="data/Arbresremarquables_7.js"></script>
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:16, minZoom:8
         })
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
             if (bounds_group.getLayers().length) {
                 map.fitBounds(bounds_group.getBounds());
             }
         }
-        var layer_SSGoogleMapSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        map.createPane('pane_GoogleMapSatellite_0');
+        map.getPane('pane_GoogleMapSatellite_0').style.zIndex = 400;
+        var layer_GoogleMapSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleMapSatellite_0',
             opacity: 1.0,
             attribution: '',
             minZoom: 8,
@@ -59,8 +64,12 @@
             minNativeZoom: 0,
             maxNativeZoom: 18
         });
-        layer_SSGoogleMapSatellite_0;
+        layer_GoogleMapSatellite_0;
+        map.addLayer(layer_GoogleMapSatellite_0);
+        map.createPane('pane_OpenStreetMap_1');
+        map.getPane('pane_OpenStreetMap_1').style.zIndex = 401;
         var layer_OpenStreetMap_1 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMap_1',
             opacity: 1.0,
             attribution: '',
             minZoom: 8,
@@ -73,68 +82,7 @@
         function pop_Communes_2(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">ID_BDCARTO</th>\
-                        <td>' + (feature.properties['ID_BDCARTO'] !== null ? Autolinker.link(feature.properties['ID_BDCARTO'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">NOM_COMM</th>\
-                        <td>' + (feature.properties['NOM_COMM'] !== null ? '<img src="images/' + String(feature.properties['NOM_COMM']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">INSEE_COMM</th>\
-                        <td>' + (feature.properties['INSEE_COMM'] !== null ? Autolinker.link(feature.properties['INSEE_COMM'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">STATUT</th>\
-                        <td>' + (feature.properties['STATUT'] !== null ? Autolinker.link(feature.properties['STATUT'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">X_COMMUNE</th>\
-                        <td>' + (feature.properties['X_COMMUNE'] !== null ? Autolinker.link(feature.properties['X_COMMUNE'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Y_COMMUNE</th>\
-                        <td>' + (feature.properties['Y_COMMUNE'] !== null ? Autolinker.link(feature.properties['Y_COMMUNE'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">SUPERFICIE</th>\
-                        <td>' + (feature.properties['SUPERFICIE'] !== null ? Autolinker.link(feature.properties['SUPERFICIE'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">POPULATION</th>\
-                        <td>' + (feature.properties['POPULATION'] !== null ? Autolinker.link(feature.properties['POPULATION'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">INSEE_CANT</th>\
-                        <td>' + (feature.properties['INSEE_CANT'] !== null ? Autolinker.link(feature.properties['INSEE_CANT'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">INSEE_ARR</th>\
-                        <td>' + (feature.properties['INSEE_ARR'] !== null ? Autolinker.link(feature.properties['INSEE_ARR'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">NOM_DEPT</th>\
-                        <td>' + (feature.properties['NOM_DEPT'] !== null ? Autolinker.link(feature.properties['NOM_DEPT'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">INSEE_DEPT</th>\
-                        <td>' + (feature.properties['INSEE_DEPT'] !== null ? Autolinker.link(feature.properties['INSEE_DEPT'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">NOM_REGION</th>\
-                        <td>' + (feature.properties['NOM_REGION'] !== null ? Autolinker.link(feature.properties['NOM_REGION'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">INSEE_REG</th>\
-                        <td>' + (feature.properties['INSEE_REG'] !== null ? Autolinker.link(feature.properties['INSEE_REG'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Shape_Leng</th>\
-                        <td>' + (feature.properties['Shape_Leng'] !== null ? Autolinker.link(feature.properties['Shape_Leng'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Shape_Area</th>\
-                        <td>' + (feature.properties['Shape_Area'] !== null ? Autolinker.link(feature.properties['Shape_Area'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['NOM_COMM'] !== null ? autolinker.link(feature.properties['NOM_COMM'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
@@ -146,540 +94,540 @@
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(236,201,123,0.58)',
-                interactive: false,
+                fillColor: 'rgba(236,201,123,0.334)',
+                interactive: true,
             }
                     break;
                 case 'ARGOEUVES':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(124,98,203,0.58)',
-                interactive: false,
+                fillColor: 'rgba(124,98,203,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BELLOY-SUR-SOMME':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(124,223,218,0.58)',
-                interactive: false,
+                fillColor: 'rgba(124,223,218,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BERTEAUCOURT-LES-DAMES':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(201,216,127,0.58)',
-                interactive: false,
+                fillColor: 'rgba(201,216,127,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BETTENCOURT-SAINT-OUEN':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(207,192,106,0.58)',
-                interactive: false,
+                fillColor: 'rgba(207,192,106,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BOUCHON':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(234,125,227,0.58)',
-                interactive: false,
+                fillColor: 'rgba(234,125,227,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BOURDON':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(179,111,227,0.58)',
-                interactive: false,
+                fillColor: 'rgba(179,111,227,0.334)',
+                interactive: true,
             }
                     break;
                 case 'BREILLY':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(39,149,233,0.58)',
-                interactive: false,
+                fillColor: 'rgba(39,149,233,0.334)',
+                interactive: true,
             }
                     break;
                 case 'CANAPLES':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(232,39,158,0.58)',
-                interactive: false,
+                fillColor: 'rgba(232,39,158,0.334)',
+                interactive: true,
             }
                     break;
                 case 'CAVILLON':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(230,230,61,0.58)',
-                interactive: false,
+                fillColor: 'rgba(230,230,61,0.334)',
+                interactive: true,
             }
                     break;
                 case 'CROUY-SAINT-PIERRE':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(67,239,119,0.58)',
-                interactive: false,
+                fillColor: 'rgba(67,239,119,0.334)',
+                interactive: true,
             }
                     break;
                 case 'DOMART-EN-PONTHIEU':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(53,64,215,0.58)',
-                interactive: false,
+                fillColor: 'rgba(53,64,215,0.334)',
+                interactive: true,
             }
                     break;
                 case 'FLIXECOURT':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(239,23,52,0.58)',
-                interactive: false,
+                fillColor: 'rgba(239,23,52,0.334)',
+                interactive: true,
             }
                     break;
                 case 'FOURDRINOY':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(210,135,55,0.58)',
-                interactive: false,
+                fillColor: 'rgba(210,135,55,0.334)',
+                interactive: true,
             }
                     break;
                 case 'FRANQUEVILLE':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(201,37,84,0.58)',
-                interactive: false,
+                fillColor: 'rgba(201,37,84,0.334)',
+                interactive: true,
             }
                     break;
                 case 'FRANSU':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(192,96,224,0.58)',
-                interactive: false,
+                fillColor: 'rgba(192,96,224,0.334)',
+                interactive: true,
             }
                     break;
                 case 'HALLOY-LES-PERNOIS':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(85,216,83,0.58)',
-                interactive: false,
+                fillColor: 'rgba(85,216,83,0.334)',
+                interactive: true,
             }
                     break;
                 case 'HANGEST-SUR-SOMME':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(239,110,35,0.58)',
-                interactive: false,
+                fillColor: 'rgba(239,110,35,0.334)',
+                interactive: true,
             }
                     break;
                 case 'HAVERNAS':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(36,170,218,0.58)',
-                interactive: false,
+                fillColor: 'rgba(36,170,218,0.334)',
+                interactive: true,
             }
                     break;
                 case 'LA CHAUSSEE-TIRANCOURT':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(85,232,105,0.58)',
-                interactive: false,
+                fillColor: 'rgba(85,232,105,0.334)',
+                interactive: true,
             }
                     break;
                 case 'LANCHES-SAINT-HILAIRE':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(69,51,232,0.58)',
-                interactive: false,
+                fillColor: 'rgba(69,51,232,0.334)',
+                interactive: true,
             }
                     break;
                 case 'LE MESGE':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(43,195,212,0.58)',
-                interactive: false,
+                fillColor: 'rgba(43,195,212,0.334)',
+                interactive: true,
             }
                     break;
                 case 'L\'ETOILE':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(14,216,108,0.58)',
-                interactive: false,
+                fillColor: 'rgba(14,216,108,0.334)',
+                interactive: true,
             }
                     break;
                 case 'PERNOIS':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(121,143,212,0.58)',
-                interactive: false,
+                fillColor: 'rgba(121,143,212,0.334)',
+                interactive: true,
             }
                     break;
                 case 'PICQUIGNY':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(148,232,103,0.58)',
-                interactive: false,
+                fillColor: 'rgba(148,232,103,0.334)',
+                interactive: true,
             }
                     break;
                 case 'RIBEAUCOURT':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(199,90,211,0.58)',
-                interactive: false,
+                fillColor: 'rgba(199,90,211,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SAINT-LEGER-LES-DOMART':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(240,165,146,0.58)',
-                interactive: false,
+                fillColor: 'rgba(240,165,146,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SAINT-OUEN':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(115,208,94,0.58)',
-                interactive: false,
+                fillColor: 'rgba(115,208,94,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SAINT-SAUVEUR':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(143,91,214,0.58)',
-                interactive: false,
+                fillColor: 'rgba(143,91,214,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SAISSEVAL':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(195,239,107,0.58)',
-                interactive: false,
+                fillColor: 'rgba(195,239,107,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SOUES':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(76,132,215,0.58)',
-                interactive: false,
+                fillColor: 'rgba(76,132,215,0.334)',
+                interactive: true,
             }
                     break;
                 case 'SURCAMPS':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(37,229,156,0.58)',
-                interactive: false,
+                fillColor: 'rgba(37,229,156,0.334)',
+                interactive: true,
             }
                     break;
                 case 'VAUCHELLES-LES-DOMART':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(166,227,101,0.58)',
-                interactive: false,
+                fillColor: 'rgba(166,227,101,0.334)',
+                interactive: true,
             }
                     break;
                 case 'VIGNACOURT':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(217,71,183,0.58)',
-                interactive: false,
+                fillColor: 'rgba(217,71,183,0.334)',
+                interactive: true,
             }
                     break;
                 case 'VILLE-LE-MARCLET':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(235,52,46,0.58)',
-                interactive: false,
+                fillColor: 'rgba(235,52,46,0.334)',
+                interactive: true,
             }
                     break;
                 case 'YZEUX':
                     return {
                 pane: 'pane_Communes_2',
                 opacity: 1,
-                color: 'rgba(35,35,35,0.58)',
+                color: 'rgba(35,35,35,0.334)',
                 dashArray: '',
                 lineCap: 'butt',
                 lineJoin: 'miter',
                 weight: 3.0, 
                 fill: true,
                 fillOpacity: 1,
-                fillColor: 'rgba(21,208,168,0.58)',
-                interactive: false,
+                fillColor: 'rgba(21,208,168,0.334)',
+                interactive: true,
             }
                     break;
             }
@@ -689,7 +637,7 @@
         map.getPane('pane_Communes_2').style['mix-blend-mode'] = 'normal';
         var layer_Communes_2 = new L.geoJson(json_Communes_2, {
             attribution: '',
-            interactive: false,
+            interactive: true,
             dataVar: 'json_Communes_2',
             layerName: 'layer_Communes_2',
             pane: 'pane_Communes_2',
@@ -698,22 +646,298 @@
         });
         bounds_group.addLayer(layer_Communes_2);
         map.addLayer(layer_Communes_2);
-        function pop_Arbres_remarquables_3(feature, layer) {
+        function pop_GR125GR800_3(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <th scope="row">Nom Arbre</th>\
-                        <td>' + (feature.properties['Nom_arbre'] !== null ? Autolinker.link(feature.properties['Nom_arbre'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Espèce</th>\
-                        <td>' + (feature.properties['Espece'] !== null ? Autolinker.link(feature.properties['Espece'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Statut</th>\
-                        <td>' + (feature.properties['Statut'] !== null ? Autolinker.link(feature.properties['Statut'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['timestamp'] !== null ? autolinker.link(feature.properties['timestamp'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Localisation</strong><br />' + (feature.properties['Localisati'] !== null ? Autolinker.link(feature.properties['Localisati'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (feature.properties['begin'] !== null ? autolinker.link(feature.properties['begin'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['end'] !== null ? autolinker.link(feature.properties['end'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['altitudeMo'] !== null ? autolinker.link(feature.properties['altitudeMo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tessellate'] !== null ? autolinker.link(feature.properties['tessellate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['extrude'] !== null ? autolinker.link(feature.properties['extrude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['visibility'] !== null ? autolinker.link(feature.properties['visibility'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['drawOrder'] !== null ? autolinker.link(feature.properties['drawOrder'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['icon'] !== null ? autolinker.link(feature.properties['icon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['measure'] !== null ? autolinker.link(feature.properties['measure'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_GR125GR800_3_0() {
+            return {
+                pane: 'pane_GR125GR800_3',
+                opacity: 1,
+                color: 'rgba(255,158,23,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 5.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_GR125GR800_3');
+        map.getPane('pane_GR125GR800_3').style.zIndex = 403;
+        map.getPane('pane_GR125GR800_3').style['mix-blend-mode'] = 'normal';
+        var layer_GR125GR800_3 = new L.geoJson(json_GR125GR800_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_GR125GR800_3',
+            layerName: 'layer_GR125GR800_3',
+            pane: 'pane_GR125GR800_3',
+            onEachFeature: pop_GR125GR800_3,
+            style: style_GR125GR800_3_0,
+        });
+        bounds_group.addLayer(layer_GR125GR800_3);
+        map.addLayer(layer_GR125GR800_3);
+        function pop_GR800_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['timestamp'] !== null ? autolinker.link(feature.properties['timestamp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['begin'] !== null ? autolinker.link(feature.properties['begin'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['end'] !== null ? autolinker.link(feature.properties['end'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['altitudeMo'] !== null ? autolinker.link(feature.properties['altitudeMo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tessellate'] !== null ? autolinker.link(feature.properties['tessellate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['extrude'] !== null ? autolinker.link(feature.properties['extrude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['visibility'] !== null ? autolinker.link(feature.properties['visibility'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['drawOrder'] !== null ? autolinker.link(feature.properties['drawOrder'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['icon'] !== null ? autolinker.link(feature.properties['icon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['measure'] !== null ? autolinker.link(feature.properties['measure'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_GR800_4_0() {
+            return {
+                pane: 'pane_GR800_4',
+                opacity: 1,
+                color: 'rgba(208,82,204,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 5.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_GR800_4');
+        map.getPane('pane_GR800_4').style.zIndex = 404;
+        map.getPane('pane_GR800_4').style['mix-blend-mode'] = 'normal';
+        var layer_GR800_4 = new L.geoJson(json_GR800_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_GR800_4',
+            layerName: 'layer_GR800_4',
+            pane: 'pane_GR800_4',
+            onEachFeature: pop_GR800_4,
+            style: style_GR800_4_0,
+        });
+        bounds_group.addLayer(layer_GR800_4);
+        map.addLayer(layer_GR800_4);
+        function pop_GR123_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['timestamp'] !== null ? autolinker.link(feature.properties['timestamp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['begin'] !== null ? autolinker.link(feature.properties['begin'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['end'] !== null ? autolinker.link(feature.properties['end'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['altitudeMo'] !== null ? autolinker.link(feature.properties['altitudeMo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tessellate'] !== null ? autolinker.link(feature.properties['tessellate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['extrude'] !== null ? autolinker.link(feature.properties['extrude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['visibility'] !== null ? autolinker.link(feature.properties['visibility'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['drawOrder'] !== null ? autolinker.link(feature.properties['drawOrder'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['icon'] !== null ? autolinker.link(feature.properties['icon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['measure'] !== null ? autolinker.link(feature.properties['measure'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_GR123_5_0() {
+            return {
+                pane: 'pane_GR123_5',
+                opacity: 1,
+                color: 'rgba(219,30,42,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 5.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_GR123_5');
+        map.getPane('pane_GR123_5').style.zIndex = 405;
+        map.getPane('pane_GR123_5').style['mix-blend-mode'] = 'normal';
+        var layer_GR123_5 = new L.geoJson(json_GR123_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_GR123_5',
+            layerName: 'layer_GR123_5',
+            pane: 'pane_GR123_5',
+            onEachFeature: pop_GR123_5,
+            style: style_GR123_5_0,
+        });
+        bounds_group.addLayer(layer_GR123_5);
+        map.addLayer(layer_GR123_5);
+        function pop_VoieVerte_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['descriptio'] !== null ? autolinker.link(feature.properties['descriptio'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['timestamp'] !== null ? autolinker.link(feature.properties['timestamp'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['begin'] !== null ? autolinker.link(feature.properties['begin'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['end'] !== null ? autolinker.link(feature.properties['end'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['altitudeMo'] !== null ? autolinker.link(feature.properties['altitudeMo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tessellate'] !== null ? autolinker.link(feature.properties['tessellate'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['extrude'] !== null ? autolinker.link(feature.properties['extrude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['visibility'] !== null ? autolinker.link(feature.properties['visibility'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['drawOrder'] !== null ? autolinker.link(feature.properties['drawOrder'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['icon'] !== null ? autolinker.link(feature.properties['icon'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['measure'] !== null ? autolinker.link(feature.properties['measure'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_VoieVerte_6_0() {
+            return {
+                pane: 'pane_VoieVerte_6',
+                opacity: 1,
+                color: 'rgba(83,159,31,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 5.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_VoieVerte_6');
+        map.getPane('pane_VoieVerte_6').style.zIndex = 406;
+        map.getPane('pane_VoieVerte_6').style['mix-blend-mode'] = 'normal';
+        var layer_VoieVerte_6 = new L.geoJson(json_VoieVerte_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_VoieVerte_6',
+            layerName: 'layer_VoieVerte_6',
+            pane: 'pane_VoieVerte_6',
+            onEachFeature: pop_VoieVerte_6,
+            style: style_VoieVerte_6_0,
+        });
+        bounds_group.addLayer(layer_VoieVerte_6);
+        map.addLayer(layer_VoieVerte_6);
+        function pop_Arbresremarquables_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (feature.properties['Photos'] !== null ? '<img src="images/' + String(feature.properties['Photos']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
@@ -722,46 +946,38 @@
             layer.bindPopup(popupContent, {maxHeight: 400});
         }
 
-        function style_Arbres_remarquables_3_0() {
+        function style_Arbresremarquables_7_0() {
             return {
-                pane: 'pane_Arbres_remarquables_3',
-                radius: 8.0,
-                opacity: 1,
-                color: 'rgba(35,35,35,1.0)',
-                dashArray: '',
-                lineCap: 'butt',
-                lineJoin: 'miter',
-                weight: 2.0,
-                fill: true,
-                fillOpacity: 1,
-                fillColor: 'rgba(219,30,42,1.0)',
+                pane: 'pane_Arbresremarquables_7',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/Trace-Tree.svg',
+            iconSize: [19.76, 19.76]
+        }),
                 interactive: true,
             }
         }
-        map.createPane('pane_Arbres_remarquables_3');
-        map.getPane('pane_Arbres_remarquables_3').style.zIndex = 403;
-        map.getPane('pane_Arbres_remarquables_3').style['mix-blend-mode'] = 'normal';
-        var layer_Arbres_remarquables_3 = new L.geoJson(json_Arbres_remarquables_3, {
+        map.createPane('pane_Arbresremarquables_7');
+        map.getPane('pane_Arbresremarquables_7').style.zIndex = 407;
+        map.getPane('pane_Arbresremarquables_7').style['mix-blend-mode'] = 'normal';
+        var layer_Arbresremarquables_7 = new L.geoJson(json_Arbresremarquables_7, {
             attribution: '',
             interactive: true,
-            dataVar: 'json_Arbres_remarquables_3',
-            layerName: 'layer_Arbres_remarquables_3',
-            pane: 'pane_Arbres_remarquables_3',
-            onEachFeature: pop_Arbres_remarquables_3,
+            dataVar: 'json_Arbresremarquables_7',
+            layerName: 'layer_Arbresremarquables_7',
+            pane: 'pane_Arbresremarquables_7',
+            onEachFeature: pop_Arbresremarquables_7,
             pointToLayer: function (feature, latlng) {
                 var context = {
                     feature: feature,
                     variables: {}
                 };
-                return L.circleMarker(latlng, style_Arbres_remarquables_3_0(feature));
+                return L.marker(latlng, style_Arbresremarquables_7_0(feature));
             },
         });
-        var cluster_Arbres_remarquables_3 = new L.MarkerClusterGroup({showCoverageOnHover: false,
-            spiderfyDistanceMultiplier: 2});
-        cluster_Arbres_remarquables_3.addLayer(layer_Arbres_remarquables_3);
-
-        bounds_group.addLayer(layer_Arbres_remarquables_3);
-        cluster_Arbres_remarquables_3.addTo(map);
+        bounds_group.addLayer(layer_Arbresremarquables_7);
+        map.addLayer(layer_Arbresremarquables_7);
             var title = new L.Control();
             title.onAdd = function (map) {
                 this._div = L.DomUtil.create('div', 'info');
@@ -769,7 +985,7 @@
                 return this._div;
             };
             title.update = function () {
-                this._div.innerHTML = '<h2>Localisation de arbres remarquables de la communauté de commune de Nièvre et Somme</h2>';
+                this._div.innerHTML = '<h2>Localisation de arbres remarquables de la communauté de communes de Nièvre et Somme</h2>';
             };
             title.addTo(map);
         var osmGeocoder = new L.Control.Geocoder({
@@ -783,7 +999,7 @@
         document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
         .title += 'Search for a place';
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/Arbres_remarquables_3.png" /> Arbres_remarquables': cluster_Arbres_remarquables_3,'Communes<br /><table><tr><td style="text-align: center;"><img src="legend/Communes_2_AILLYSURSOMME0.png" /></td><td>AILLY-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_ARGOEUVES1.png" /></td><td>ARGOEUVES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BELLOYSURSOMME2.png" /></td><td>BELLOY-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BERTEAUCOURTLESDAMES3.png" /></td><td>BERTEAUCOURT-LES-DAMES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BETTENCOURTSAINTOUEN4.png" /></td><td>BETTENCOURT-SAINT-OUEN</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BOUCHON5.png" /></td><td>BOUCHON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BOURDON6.png" /></td><td>BOURDON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BREILLY7.png" /></td><td>BREILLY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CANAPLES8.png" /></td><td>CANAPLES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CAVILLON9.png" /></td><td>CAVILLON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CROUYSAINTPIERRE10.png" /></td><td>CROUY-SAINT-PIERRE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_DOMARTENPONTHIEU11.png" /></td><td>DOMART-EN-PONTHIEU</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FLIXECOURT12.png" /></td><td>FLIXECOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FOURDRINOY13.png" /></td><td>FOURDRINOY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FRANQUEVILLE14.png" /></td><td>FRANQUEVILLE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FRANSU15.png" /></td><td>FRANSU</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HALLOYLESPERNOIS16.png" /></td><td>HALLOY-LES-PERNOIS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HANGESTSURSOMME17.png" /></td><td>HANGEST-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HAVERNAS18.png" /></td><td>HAVERNAS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LACHAUSSEETIRANCOURT19.png" /></td><td>LA CHAUSSEE-TIRANCOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LANCHESSAINTHILAIRE20.png" /></td><td>LANCHES-SAINT-HILAIRE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LEMESGE21.png" /></td><td>LE MESGE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LETOILE22.png" /></td><td>L\'ETOILE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_PERNOIS23.png" /></td><td>PERNOIS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_PICQUIGNY24.png" /></td><td>PICQUIGNY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_RIBEAUCOURT25.png" /></td><td>RIBEAUCOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTLEGERLESDOMART26.png" /></td><td>SAINT-LEGER-LES-DOMART</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTOUEN27.png" /></td><td>SAINT-OUEN</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTSAUVEUR28.png" /></td><td>SAINT-SAUVEUR</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAISSEVAL29.png" /></td><td>SAISSEVAL</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SOUES30.png" /></td><td>SOUES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SURCAMPS31.png" /></td><td>SURCAMPS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VAUCHELLESLESDOMART32.png" /></td><td>VAUCHELLES-LES-DOMART</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VIGNACOURT33.png" /></td><td>VIGNACOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VILLELEMARCLET34.png" /></td><td>VILLE-LE-MARCLET</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_YZEUX35.png" /></td><td>YZEUX</td></tr></table>': layer_Communes_2,"OpenStreetMap": layer_OpenStreetMap_1,"SS Google Map Satellite": layer_SSGoogleMapSatellite_0,}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/Arbresremarquables_7.png" /> Arbres remarquables ': layer_Arbresremarquables_7,'<img src="legend/VoieVerte_6.png" /> Voie Verte': layer_VoieVerte_6,'<img src="legend/GR123_5.png" /> GR123': layer_GR123_5,'<img src="legend/GR800_4.png" /> GR800': layer_GR800_4,'<img src="legend/GR125GR800_3.png" /> GR125-GR800': layer_GR125GR800_3,'Communes<br /><table><tr><td style="text-align: center;"><img src="legend/Communes_2_AILLYSURSOMME0.png" /></td><td>AILLY-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_ARGOEUVES1.png" /></td><td>ARGOEUVES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BELLOYSURSOMME2.png" /></td><td>BELLOY-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BERTEAUCOURTLESDAMES3.png" /></td><td>BERTEAUCOURT-LES-DAMES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BETTENCOURTSAINTOUEN4.png" /></td><td>BETTENCOURT-SAINT-OUEN</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BOUCHON5.png" /></td><td>BOUCHON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BOURDON6.png" /></td><td>BOURDON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_BREILLY7.png" /></td><td>BREILLY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CANAPLES8.png" /></td><td>CANAPLES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CAVILLON9.png" /></td><td>CAVILLON</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_CROUYSAINTPIERRE10.png" /></td><td>CROUY-SAINT-PIERRE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_DOMARTENPONTHIEU11.png" /></td><td>DOMART-EN-PONTHIEU</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FLIXECOURT12.png" /></td><td>FLIXECOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FOURDRINOY13.png" /></td><td>FOURDRINOY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FRANQUEVILLE14.png" /></td><td>FRANQUEVILLE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_FRANSU15.png" /></td><td>FRANSU</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HALLOYLESPERNOIS16.png" /></td><td>HALLOY-LES-PERNOIS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HANGESTSURSOMME17.png" /></td><td>HANGEST-SUR-SOMME</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_HAVERNAS18.png" /></td><td>HAVERNAS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LACHAUSSEETIRANCOURT19.png" /></td><td>LA CHAUSSEE-TIRANCOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LANCHESSAINTHILAIRE20.png" /></td><td>LANCHES-SAINT-HILAIRE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LEMESGE21.png" /></td><td>LE MESGE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_LETOILE22.png" /></td><td>L\'ETOILE</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_PERNOIS23.png" /></td><td>PERNOIS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_PICQUIGNY24.png" /></td><td>PICQUIGNY</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_RIBEAUCOURT25.png" /></td><td>RIBEAUCOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTLEGERLESDOMART26.png" /></td><td>SAINT-LEGER-LES-DOMART</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTOUEN27.png" /></td><td>SAINT-OUEN</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAINTSAUVEUR28.png" /></td><td>SAINT-SAUVEUR</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SAISSEVAL29.png" /></td><td>SAISSEVAL</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SOUES30.png" /></td><td>SOUES</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_SURCAMPS31.png" /></td><td>SURCAMPS</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VAUCHELLESLESDOMART32.png" /></td><td>VAUCHELLES-LES-DOMART</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VIGNACOURT33.png" /></td><td>VIGNACOURT</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_VILLELEMARCLET34.png" /></td><td>VILLE-LE-MARCLET</td></tr><tr><td style="text-align: center;"><img src="legend/Communes_2_YZEUX35.png" /></td><td>YZEUX</td></tr></table>': layer_Communes_2,"OpenStreetMap": layer_OpenStreetMap_1,"Google Map Satellite": layer_GoogleMapSatellite_0,}).addTo(map);
         setBounds();
         var i = 0;
         layer_Communes_2.eachLayer(function(layer) {
@@ -798,13 +1014,6 @@
               addLabel(layer, i);
               i++;
         });
-        map.addControl(new L.Control.Search({
-            layer: cluster_Communes_2,
-            initial: false,
-            hideMarkerOnCollapse: true,
-            propertyName: 'NOM_COMM'}));
-        document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars';
         resetLabels([layer_Communes_2]);
         map.on("zoomend", function(){
             resetLabels([layer_Communes_2]);
